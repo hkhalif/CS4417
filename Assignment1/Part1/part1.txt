@@ -1,0 +1,81 @@
+Student Name: Hedaya Khalif
+Student #: 250887811
+
+
+--PART 1 QUESTIONS--
+
+INDEXING (20)
+
+BASIC INDEXING
+
+2. Explain in one sentence why we might break an index into shards.
+Breaking up an index into shards allows us to distribute operations across shards and nodes to improve performance.
+
+3. Explain in one sentence why we might replicate an index.
+We might replicate an index to protect against data loss. 
+
+4. Explain in one sentence why your cluster health is yellow.
+My cluster health is yellow as we only have one node running at the moment, that one replica cannot yet be allocated (for high availability) until a later point in time when another node joins the cluster.
+
+
+INDEXING REDDIT 
+
+1. Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/indices?v&pretty"
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+
+
+2. Hedayas-MacBook-Pro:Part1 hedayakhalif$ curl -H 'Content-Type: application/json' -XPOST localhost:9200/_bulk --data-binary @test.json > /dev/null
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 46.8M  100 11.8M  100 35.0M  2507k  7442k  0:00:04  0:00:04 --:--:-- 8614k
+
+What is the name of the index created by the command?
+The name of the index is 'comments'.
+ 
+
+3. How large is the index? (pri.store.size)
+The index is 45.9mb. 
+
+
+
+SEARCH (15)
+
+Answer the following questions using the three example search queries below.
+
+1. Do the three queries below return different sets of documents? How can you tell?
+
+Yes all three queries would return different sets of documents. The difference is in the terms being searched. Query 1 would return all accounts containing the term "cat" in the body. Query 2 would return all accounts containing the term "cats" in the body. Query 3 would return all accounts containing the term "cat" and "cats".
+
+2. Give the highest score for each query.
+
+Query 1:10.508255
+Query 2:11.63848
+Query 3:18.855682
+
+3. What can you deduce about the default stemming procedure used by Elasticsearch?
+
+I can deduce that there is no default stemming procedure being used because the query searching for 'cat' returned different results than the query searching for 'cats'. If stemming was being used, cats would be simplified to its stem which would be 'cat' and the queries would output the same results. 
+
+4. Give a query that could be used to check whether or not Elasticsearch removes a common English stopword.
+
+I would conduct this query and if there were any successful hits that means Elasticsearch did not remove the stopword (in this case "the"). 
+
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'{ "query": { "match" : { "body" : { "query" : "the"} } } }'
+
+
+
+ANALYZERS (15)
+
+1. Hedayas-MacBook-Pro:Part1 hedayakhalif$ curl -X DELETE "localhost:9200/comments?pretty&pretty"
+
+2. 
+
+i. Re-run the three queries from the previous section. In a few sentences, describe how the results have changed.
+
+The results for queries 1 & 2 have become the same and the results for query 3 have increased. 
+
+ii. Has the size of the index become larger or smaller compared with the previous runs? Why do you think this might be?
+
+The size of the index has decreased compared to the previous runs. This is due to the stemming analyzer applied to this run. Stemming reduces the number of separate terms indexed by “collapsing” multiple word forms into a single base word.
+
+

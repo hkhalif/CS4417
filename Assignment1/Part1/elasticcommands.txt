@@ -1,0 +1,133 @@
+Student Name: Hedaya Khalif
+Student #: 250887811
+
+BASIC INDEXING
+
+1. Getting Started Guide Commands & Outputs
+
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/health?v&pretty"
+epoch      timestamp cluster            status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+1612223870 23:57:50  elasticsearch_brew green           1         1      0   0    0    0        0             0                  -                100.0%
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/nodes?v&pretty"
+ip        heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+127.0.0.1           16          98  12    2.13                  dimr      *      Hedayas-MacBook-Pro.local
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/indices?v&pretty"
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X PUT "localhost:9200/customer?pretty&pretty"
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "customer"
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/indices?v&pretty"
+health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   customer 3UysA_Y8RiuAvlstENa7LQ   1   1          0            0       208b           208b
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X PUT "localhost:9200/customer/_doc/1?pretty&pretty" -H 'Content-Type: application/json' -d'
+> {
+>   "name": "John Doe"
+> }
+> '
+{
+  "_index" : "customer",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/customer/_doc/1?pretty&pretty"
+{
+  "_index" : "customer",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "_seq_no" : 0,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "name" : "John Doe"
+  }
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X DELETE "localhost:9200/customer?pretty&pretty"
+{
+  "acknowledged" : true
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/indices?v&pretty"
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X PUT "localhost:9200/customer?pretty"
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "customer"
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X PUT "localhost:9200/customer/_doc/1?pretty" -H 'Content-Type: application/json' -d'
+> {
+>   "name": "John Doe"
+> }
+> '
+{
+  "_index" : "customer",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "result" : "created",
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "_seq_no" : 0,
+  "_primary_term" : 1
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/customer/_doc/1?pretty"
+{
+  "_index" : "customer",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "_seq_no" : 0,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "name" : "John Doe"
+  }
+}
+Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X DELETE "localhost:9200/customer?pretty"
+{
+  "acknowledged" : true
+}
+
+
+2. Explain in one sentence why we might break an index into shards.
+Breaking up an index into shards allows us to distribute operations across shards and nodes to improve performance.
+
+3. Explain in one sentence why we might replicate an index.
+We might replicate an index to protect against data loss. 
+
+4. Explain in one sentence why your cluster health is yellow.
+My cluster health is yellow as we only have one node running at the moment, that one replica cannot yet be allocated (for high availability) until a later point in time when another node joins the cluster.
+
+
+INDEXING REDDIT 
+
+1. Hedayas-MacBook-Pro:~ hedayakhalif$ curl -X GET "localhost:9200/_cat/indices?v&pretty"
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+
+
+2. Hedayas-MacBook-Pro:Part1 hedayakhalif$ curl -H 'Content-Type: application/json' -XPOST localhost:9200/_bulk --data-binary @test.json > /dev/null
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 46.8M  100 11.8M  100 35.0M  2507k  7442k  0:00:04  0:00:04 --:--:-- 8614k
+
+What is the name of the index created by the command?
+The name of the index is 'comments'.
+ 
+
+3. How large is the index? (pri.store.size)
+The index is 45.9mb. 
